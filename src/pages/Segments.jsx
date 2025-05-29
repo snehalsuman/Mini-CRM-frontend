@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+const API_BASE = "https://mini-crm-backend-cl7l.onrender.com";
+
 const Segments = () => {
   const [segmentName, setSegmentName] = useState("");
   const [rules, setRules] = useState({
@@ -12,7 +14,7 @@ const Segments = () => {
   const token = localStorage.getItem("token");
 
   const handlePreview = async () => {
-    const res = await fetch("http://localhost:8000/api/segments/preview", {
+    const res = await fetch(`${API_BASE}/api/segments/preview`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -25,7 +27,7 @@ const Segments = () => {
   };
 
   const handleCreate = async () => {
-    const res = await fetch("http://localhost:8000/api/segments", {
+    const res = await fetch(`${API_BASE}/api/segments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -3,6 +3,9 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 
+// ✅ Replace with your deployed backend URL
+const API_BASE = "https://mini-crm-backend-cl7l.onrender.com";
+
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -11,7 +14,7 @@ const Login = () => {
     const decoded = jwtDecode(credentialResponse.credential);
     console.log("🧑 Google user:", decoded);
 
-    const res = await fetch("http://localhost:8000/api/auth/verify", {
+    const res = await fetch(`${API_BASE}/api/auth/verify`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token: credentialResponse.credential }),
@@ -20,10 +23,11 @@ const Login = () => {
     const result = await res.json();
     if (result.verified) {
       localStorage.setItem("token", credentialResponse.credential); // ✅ Store token
-      login(result); // your context login (if needed)
+      login(result); // optional: update context
       navigate("/dashboard");
+    } else {
+      alert("❌ Authentication failed");
     }
-    
   };
 
   return (

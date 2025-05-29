@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+const API_BASE = "https://mini-crm-backend-cl7l.onrender.com";
+
 const Dashboard = () => {
   const [metrics, setMetrics] = useState({
     customers: 0,
@@ -18,7 +20,7 @@ const Dashboard = () => {
 
     const fetchMetrics = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/dashboard", {
+        const res = await fetch(`${API_BASE}/api/dashboard`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -1,230 +1,127 @@
 import { useEffect, useState } from "react";
 
-const Campaigns = () => {
-  const [segments, setSegments] = useState([]);
-  const [selectedSegment, setSelectedSegment] = useState("");
-  const [message, setMessage] = useState("");
-  const [campaigns, setCampaigns] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [objective, setObjective] = useState("");
-  const [aiSuggestions, setAiSuggestions] = useState([]);
-  const [aiLoading, setAiLoading] = useState(false);
-  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(null);
+const API_BASE = "https://mini-crm-backend-cl7l.onrender.com";
 
-  const token = localStorage.getItem("token");
+const Customers = () => {
+  const [customers, setCustomers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // 🔁 Load segments and campaigns on mount
-  useEffect(() => {
-    if (!token) return;
-
-    const fetchSegments = async () => {
-      try {
-        const res = await fetch("http://localhost:8000/api/segments", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await res.json();
-        setSegments(data);
-      } catch (err) {
-        console.error("❌ Failed to load segments:", err);
-      }
-    };
-
-    const fetchCampaigns = async () => {
-      try {
-        const res = await fetch("http://localhost:8000/api/campaigns", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await res.json();
-        setCampaigns(data);
-      } catch (err) {
-        console.error("❌ Failed to load campaigns:", err);
-      }
-    };
-
-    fetchSegments();
-    fetchCampaigns();
-  }, [token]);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [totalSpend, setTotalSpend] = useState(0);
+  const [visits, setVisits] = useState(0);
+  const [tags, setTags] = useState("");
 
   useEffect(() => {
-    if (aiSuggestions.length > 0) {
-      document.getElementById("ai-suggestions")?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [aiSuggestions]);
+    const token = localStorage.getItem("token");
+    console.log("🧾 Token being sent:", token);
 
-  const handleCreateCampaign = async () => {
-    if (!selectedSegment || !message) {
-      alert("Please select a segment and write a message");
-      return;
-    }
+    fetch(`${API_BASE}/api/customers`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setCustomers(data))
+      .catch((error) => console.error("Failed to fetch customers:", error))
+      .finally(() => setLoading(false));
+  }, []);
 
-    setLoading(true);
+  const handleAddCustomer = async () => {
+    const token = localStorage.getItem("token");
+    if (!name || !email) return alert("Name and Email are required.");
+
     try {
-      const res = await fetch("http://localhost:8000/api/campaigns", {
+      const res = await fetch(`${API_BASE}/api/customers`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          name: "New Campaign",
-          segmentId: selectedSegment,
-          message,
+          name,
+          email,
+          phone,
+          totalSpend,
+          visits,
+          tags: tags.split(",").map((tag) => tag.trim()),
         }),
       });
 
       const data = await res.json();
-      setCampaigns((prev) => [data, ...prev]);
-      setMessage("");
-      alert("✅ Campaign launched!");
-    } catch (err) {
-      console.error("❌ Campaign error", err);
-      alert("Something went wrong while launching the campaign.");
-    } finally {
-      setLoading(false);
-    }
-  };
+      setCustomers((prev) => [...prev, data]);
 
-  const fetchSuggestions = async () => {
-    if (!objective) return alert("Please enter a campaign objective first.");
-    setAiLoading(true);
-    setSelectedSuggestionIndex(null);
-    try {
-      const res = await fetch("http://localhost:8000/api/ai/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ objective }),
-      });
-      const data = await res.json();
-      setAiSuggestions(data.messages || []);
+      // Reset form
+      setName("");
+      setEmail("");
+      setPhone("");
+      setTotalSpend(0);
+      setVisits(0);
+      setTags("");
+
+      alert("✅ Customer added!");
     } catch (err) {
-      console.error("⚠️ AI error:", err);
-      setAiSuggestions(["⚠️ Something went wrong. Try again later."]);
+      console.error("Error adding customer:", err);
+      alert("❌ Failed to add customer.");
     }
-    setAiLoading(false);
   };
 
   return (
     <div className="p-6 space-y-6">
-      <h2 className="text-2xl font-semibold">📢 Campaigns</h2>
+      <h2 className="text-2xl font-semibold mb-4">👥 Customers</h2>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label className="block mb-1 text-sm font-medium">Select Segment</label>
-          <select
-            value={selectedSegment}
-            onChange={(e) => setSelectedSegment(e.target.value)}
-            className="w-full px-4 py-2 border rounded"
-          >
-            <option value="">-- Choose Segment --</option>
-            {segments.map((seg) => (
-              <option key={seg._id} value={seg._id}>
-                {seg.name}
-              </option>
-            ))}
-          </select>
+      {/* Add Customer Form */}
+      <div className="bg-white p-4 border rounded shadow space-y-4">
+        <h3 className="text-lg font-medium">➕ Add New Customer</h3>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <input className="border p-2 rounded" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+          <input className="border p-2 rounded" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input className="border p-2 rounded" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+          <input className="border p-2 rounded" type="number" placeholder="Total Spend" value={totalSpend} onChange={(e) => setTotalSpend(Number(e.target.value))} />
+          <input className="border p-2 rounded" type="number" placeholder="Visits" value={visits} onChange={(e) => setVisits(Number(e.target.value))} />
+          <input className="border p-2 rounded" placeholder="Tags (comma separated)" value={tags} onChange={(e) => setTags(e.target.value)} />
         </div>
-
-        <div>
-          <label className="block mb-1 text-sm font-medium">Message</label>
-          <textarea
-            rows={3}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="w-full px-4 py-2 border rounded resize-none"
-            placeholder="Write your message here..."
-          ></textarea>
-        </div>
+        <button onClick={handleAddCustomer} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          Save Customer
+        </button>
       </div>
 
-      {/* AI Input */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label className="block mb-1 text-sm font-medium">🧠 AI Objective</label>
-          <input
-            type="text"
-            value={objective}
-            onChange={(e) => setObjective(e.target.value)}
-            className="w-full px-4 py-2 border rounded"
-            placeholder="e.g. bring back inactive users"
-          />
-        </div>
-
-        <div className="flex items-end">
-          <button
-            onClick={fetchSuggestions}
-            disabled={aiLoading}
-            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-          >
-            {aiLoading ? "Generating..." : "Suggest Messages"}
-          </button>
-        </div>
-      </div>
-
-      {/* AI Suggestions */}
-      {aiSuggestions.length > 0 && (
-        <div id="ai-suggestions" className="bg-gray-50 border p-4 rounded mt-2">
-          <p className="font-medium mb-1">✨ AI Suggestions:</p>
-          <ul className="list-disc list-inside text-sm space-y-1">
-            {aiSuggestions.map((msg, i) => (
-              <li
-                key={i}
-                className={`cursor-pointer hover:text-blue-600 ${
-                  selectedSuggestionIndex === i ? "text-blue-600 font-semibold" : ""
-                }`}
-                onClick={() => {
-                  setMessage(msg);
-                  setSelectedSuggestionIndex(i);
-                }}
-              >
-                {msg}
-              </li>
-            ))}
-          </ul>
+      {/* Customer Table */}
+      {loading ? (
+        <p className="text-gray-600">Loading customers...</p>
+      ) : customers.length === 0 ? (
+        <p className="text-gray-600">No customers found.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full border border-gray-300 rounded-lg mt-4">
+            <thead>
+              <tr className="bg-gray-100 text-left">
+                <th className="px-4 py-2 border-b">Name</th>
+                <th className="px-4 py-2 border-b">Email</th>
+                <th className="px-4 py-2 border-b">Phone</th>
+                <th className="px-4 py-2 border-b">Total Spend</th>
+                <th className="px-4 py-2 border-b">Visits</th>
+                <th className="px-4 py-2 border-b">Tags</th>
+              </tr>
+            </thead>
+            <tbody>
+              {customers.map((cust) => (
+                <tr key={cust._id} className="hover:bg-gray-50">
+                  <td className="px-4 py-2 border-b">{cust.name}</td>
+                  <td className="px-4 py-2 border-b">{cust.email}</td>
+                  <td className="px-4 py-2 border-b">{cust.phone}</td>
+                  <td className="px-4 py-2 border-b">₹{cust.totalSpend}</td>
+                  <td className="px-4 py-2 border-b">{cust.visits}</td>
+                  <td className="px-4 py-2 border-b text-sm text-gray-600">{cust.tags.join(", ")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
-
-      <button
-        onClick={handleCreateCampaign}
-        disabled={loading}
-        className="px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded"
-      >
-        {loading ? "Sending..." : "Send Campaign"}
-      </button>
-
-      <div className="mt-6">
-        <h4 className="text-lg font-medium mb-2">📈 Recent Campaigns</h4>
-        {campaigns.length === 0 ? (
-          <p className="text-gray-600">No campaigns launched yet.</p>
-        ) : (
-          <ul className="space-y-3">
-            {campaigns.map((c) => (
-              <li
-                key={c._id}
-                className="p-4 border rounded bg-white shadow-sm flex justify-between"
-              >
-                <div>
-                  <p className="font-semibold">{c.name}</p>
-                  <p className="text-sm text-gray-500">
-                    Sent: {c.sent}, Failed: {c.failed}
-                  </p>
-                </div>
-                <span className="text-xs text-gray-400">
-                  {new Date(c.createdAt).toLocaleString()}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
     </div>
   );
 };
 
-export default Campaigns;
+export default Customers;
