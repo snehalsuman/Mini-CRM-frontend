@@ -1,12 +1,30 @@
-# React + Vite
+# 📱 Mini CRM Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🔗 Live Demo
 
-Currently, two official plugins are available:
+🌐 [https://mini-crm-frontend-chi.vercel.app](https://mini-crm-frontend-chi.vercel.app)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This is the frontend of the Mini CRM Platform built using **React + Vite + Tailwind CSS**. It provides a user-friendly interface for managing customers, creating audience segments, launching AI-powered campaigns, and viewing delivery performance.
 
-## Expanding the ESLint configuration
+## 🚀 Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Google OAuth 2.0 authentication
+- Dynamic customer and order views
+- Segment creation with rule logic
+- Campaign creation and AI message suggestions
+- Dashboard metrics (customers, segments, campaigns, messages)
+- Responsive and clean UI
+
+## 🛠 Tech Stack
+
+- React.js (Vite)
+- Tailwind CSS
+- React Router
+- Google OAuth
+- OpenRouter (for AI)
+
+## 📦 Installation
+
+```bash
+cd frontend
+npm install
