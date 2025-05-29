@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 
+const API_BASE = "https://mini-crm-backend-cl7l.onrender.com";
+
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Add form state
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -14,13 +15,13 @@ const Customers = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-console.log("🧾 Token being sent:", token); // log it
+    console.log("🧾 Token being sent:", token);
 
-fetch("http://localhost:8000/api/customers", {
-  headers: {
-    Authorization: `Bearer ${token}`,
-  },
-})
+    fetch(`${API_BASE}/api/customers`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => res.json())
       .then((data) => setCustomers(data))
       .catch((error) => console.error("Failed to fetch customers:", error))
@@ -32,7 +33,7 @@ fetch("http://localhost:8000/api/customers", {
     if (!name || !email) return alert("Name and Email are required.");
 
     try {
-      const res = await fetch("http://localhost:8000/api/customers", {
+      const res = await fetch(`${API_BASE}/api/customers`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,12 +45,12 @@ fetch("http://localhost:8000/api/customers", {
           phone,
           totalSpend,
           visits,
-          tags: tags.split(",").map(tag => tag.trim()),
+          tags: tags.split(",").map((tag) => tag.trim()),
         }),
       });
 
       const data = await res.json();
-      setCustomers(prev => [...prev, data]);
+      setCustomers((prev) => [...prev, data]);
 
       // Reset form
       setName("");
@@ -74,12 +75,12 @@ fetch("http://localhost:8000/api/customers", {
       <div className="bg-white p-4 border rounded shadow space-y-4">
         <h3 className="text-lg font-medium">➕ Add New Customer</h3>
         <div className="grid gap-4 sm:grid-cols-2">
-          <input className="border p-2 rounded" placeholder="Name" value={name} onChange={e => setName(e.target.value)} />
-          <input className="border p-2 rounded" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-          <input className="border p-2 rounded" placeholder="Phone" value={phone} onChange={e => setPhone(e.target.value)} />
-          <input className="border p-2 rounded" type="number" placeholder="Total Spend" value={totalSpend} onChange={e => setTotalSpend(Number(e.target.value))} />
-          <input className="border p-2 rounded" type="number" placeholder="Visits" value={visits} onChange={e => setVisits(Number(e.target.value))} />
-          <input className="border p-2 rounded" placeholder="Tags (comma separated)" value={tags} onChange={e => setTags(e.target.value)} />
+          <input className="border p-2 rounded" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+          <input className="border p-2 rounded" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input className="border p-2 rounded" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+          <input className="border p-2 rounded" type="number" placeholder="Total Spend" value={totalSpend} onChange={(e) => setTotalSpend(Number(e.target.value))} />
+          <input className="border p-2 rounded" type="number" placeholder="Visits" value={visits} onChange={(e) => setVisits(Number(e.target.value))} />
+          <input className="border p-2 rounded" placeholder="Tags (comma separated)" value={tags} onChange={(e) => setTags(e.target.value)} />
         </div>
         <button onClick={handleAddCustomer} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
           Save Customer
