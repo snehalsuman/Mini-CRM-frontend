@@ -15,8 +15,6 @@ const Customers = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("🧾 Token being sent:", token);
-
     fetch(`${API_BASE}/api/customers`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -52,7 +50,7 @@ const Customers = () => {
       const data = await res.json();
       setCustomers((prev) => [...prev, data]);
 
-     
+      // Reset form
       setName("");
       setEmail("");
       setPhone("");
@@ -71,23 +69,41 @@ const Customers = () => {
     <div className="p-6 space-y-6">
       <h2 className="text-2xl font-semibold mb-4">👥 Customers</h2>
 
-    
+      {/* Add Customer Form */}
       <div className="bg-white p-4 border rounded shadow space-y-4">
         <h3 className="text-lg font-medium">➕ Add New Customer</h3>
         <div className="grid gap-4 sm:grid-cols-2">
-          <input className="border p-2 rounded" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-          <input className="border p-2 rounded" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input className="border p-2 rounded" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
-          <input className="border p-2 rounded" type="number" placeholder="Total Spend" value={totalSpend} onChange={(e) => setTotalSpend(Number(e.target.value))} />
-          <input className="border p-2 rounded" type="number" placeholder="Visits" value={visits} onChange={(e) => setVisits(Number(e.target.value))} />
-          <input className="border p-2 rounded" placeholder="Tags (comma separated)" value={tags} onChange={(e) => setTags(e.target.value)} />
+          <div>
+            <label className="block text-sm font-medium mb-1">Name</label>
+            <input className="border p-2 rounded w-full" placeholder="John Doe" value={name} onChange={(e) => setName(e.target.value)} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <input className="border p-2 rounded w-full" placeholder="john@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Phone</label>
+            <input className="border p-2 rounded w-full" placeholder="10-digit number" value={phone} onChange={(e) => setPhone(e.target.value)} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Total Spend (₹)</label>
+            <input className="border p-2 rounded w-full" type="number" value={totalSpend} onChange={(e) => setTotalSpend(Number(e.target.value))} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Total Visits</label>
+            <input className="border p-2 rounded w-full" type="number" value={visits} onChange={(e) => setVisits(Number(e.target.value))} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Tags (comma separated)</label>
+            <input className="border p-2 rounded w-full" placeholder="e.g. loyal, premium" value={tags} onChange={(e) => setTags(e.target.value)} />
+          </div>
         </div>
         <button onClick={handleAddCustomer} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
           Save Customer
         </button>
       </div>
 
-      
+      {/* Customer Table */}
       {loading ? (
         <p className="text-gray-600">Loading customers...</p>
       ) : customers.length === 0 ? (
