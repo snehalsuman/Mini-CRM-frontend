@@ -140,7 +140,7 @@ const Campaigns = () => {
         </div>
       </div>
 
-      {/* AI Input */}
+      
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="block mb-1 text-sm font-medium">🧠 AI Objective</label>
@@ -164,7 +164,7 @@ const Campaigns = () => {
         </div>
       </div>
 
-      {/* AI Suggestions */}
+      
       {aiSuggestions.length > 0 && (
         <div id="ai-suggestions" className="bg-gray-50 border p-4 rounded mt-2">
           <p className="font-medium mb-1">✨ AI Suggestions:</p>

@@ -3,7 +3,6 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 
-// ✅ Replace with your deployed backend URL
 const API_BASE = "https://mini-crm-backend-cl7l.onrender.com";
 
 const Login = () => {
@@ -22,8 +21,8 @@ const Login = () => {
 
     const result = await res.json();
     if (result.verified) {
-      localStorage.setItem("token", credentialResponse.credential); // ✅ Store token
-      login(result); // optional: update context
+      localStorage.setItem("token", credentialResponse.credential); 
+      login(result); 
       navigate("/dashboard");
     } else {
       alert("❌ Authentication failed");

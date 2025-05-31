@@ -52,7 +52,7 @@ const Customers = () => {
       const data = await res.json();
       setCustomers((prev) => [...prev, data]);
 
-      // Reset form
+     
       setName("");
       setEmail("");
       setPhone("");
@@ -71,7 +71,7 @@ const Customers = () => {
     <div className="p-6 space-y-6">
       <h2 className="text-2xl font-semibold mb-4">👥 Customers</h2>
 
-      {/* Add Customer Form */}
+    
       <div className="bg-white p-4 border rounded shadow space-y-4">
         <h3 className="text-lg font-medium">➕ Add New Customer</h3>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -87,7 +87,7 @@ const Customers = () => {
         </button>
       </div>
 
-      {/* Customer Table */}
+      
       {loading ? (
         <p className="text-gray-600">Loading customers...</p>
       ) : customers.length === 0 ? (
