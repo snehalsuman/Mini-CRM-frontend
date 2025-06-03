@@ -28,3 +28,4 @@ This is the frontend of the Mini CRM Platform built using **React + Vite + Tailw
 ```bash
 cd frontend
 npm install
+npm run dev
